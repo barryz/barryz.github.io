@@ -1,7 +1,7 @@
 # Site settings
 title: Barryz Blog
 SEOTitle: 张斌的博客 | Barryz Blog
-header-img: img/home-bg.jpg
+header-img: img/home-bg1.jpg
 email: barryzxb@gmail.com
 description: "随笔、博客、家庭生活"
 keyword: "barryz"
@@ -77,7 +77,7 @@ sidebar-avatar: /img/avatar-barryz.jpg      # use absolute URL, seeing it's used
 
 # Featured Tags
 featured-tags: true                     # whether or not using Feature-Tags
-featured-condition-size: 1              # A tag will be featured if the size of it is more than this condition value
+featured-condition-size: 10              # A tag will be featured if the size of it is more than this condition value
 
 
 
