@@ -12,6 +12,8 @@ tags:
     - Golang
 ---
 
+> “Start Consul. ”
+
 # Consul使用说明
 
 ---
