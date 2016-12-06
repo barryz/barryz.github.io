@@ -1,4 +1,4 @@
-﻿---
+---
 layout:     post
 title:      "Consul使用说明"
 subtitle:   "consul入门指南"
@@ -13,8 +13,6 @@ tags:
 ---
 
 # Consul使用说明
-
-标签（空格分隔）： golang consul etcd
 
 ---
 
