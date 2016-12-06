@@ -5,8 +5,8 @@ header-img: img/home-bg.jpg
 email: barryzxb@gmail.com
 description: "随笔、博客、生活"
 keyword: ""
-url: "http://blog.barryz.cc"              # your host, for absolute URL
-baseurl: "/"         # for example, '/blog' if your blog hosted on 'host/blog'
+url: "https://huangxuan.me"              # your host, for absolute URL
+baseurl: ""         # for example, '/blog' if your blog hosted on 'host/blog'
 
 
 
