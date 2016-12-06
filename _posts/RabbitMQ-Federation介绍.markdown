@@ -1,14 +1,16 @@
-﻿---
+---
 layout:     post
-title:      "RabbitMQ Fedration"
-subtitle:   " \"RabbitMQ Fedration 简介\""
-date:       2016-12-06 15:23:37
-author:     "Barryz"
+title:      "Hello 2015"
+subtitle:   " \"Hello World, Hello Blog\""
+date:       2015-01-29 12:00:00
+author:     "Hux"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - RabbitMQ
+    - 生活
 ---
+
+> “Yeah It's on. ”
 
 # RabbitMQ Federation介绍
 
