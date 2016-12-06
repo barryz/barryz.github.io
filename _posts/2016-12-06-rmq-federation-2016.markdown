@@ -1,0 +1,15 @@
+---
+layout:     post
+title:      "Hello 2016"
+subtitle:   " \"Hello World, Hello Blog\""
+date:       2016-12-06 15:32:37
+author:     "Barryz"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - 生活
+---
+
+> “Yeah It's on. ”
+
+# 开通博客啦
