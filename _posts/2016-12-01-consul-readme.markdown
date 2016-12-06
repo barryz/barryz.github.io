@@ -76,6 +76,7 @@ $consul agent -dev
 
 ***查看集群成员***
 命令行:
+
 ```bash
 $ consul members
 Node                Address            Status  Type    Build     Protocol  DC
@@ -83,6 +84,7 @@ vm-test-barryz  172.16.18.130:8301  alive   server  0.7.1  2         dc1
 ```
 
 [HTTP API][httpapi]
+
 ```bash
 $ curl localhost:8500/v1/catalog/nodes
 [{"Node":"vm-test-barryz","Address":"127.0.0.1","TaggedAddresses":{"lan":"127.0.0.1","wan":"127.0.0.1"},"CreateIndex":4,"ModifyIndex":110}]
@@ -96,6 +98,7 @@ $ curl localhost:8500/v1/catalog/nodes
 
 #### 服务定义
     编写服务定义文件， 例如在`/srv/consul/consul`下新建`conf.d`目录， 并新增文件`web.json`:
+
 ```json
 { 
 "service": {
@@ -105,7 +108,9 @@ $ curl localhost:8500/v1/catalog/nodes
 }
 }
 ```
+
 编辑完成之后重启agent， 指定以下参数：
+
 ```bash
 $consul agent -dev -config-dir=/srv/consul/consul.d
 ```
@@ -113,6 +118,7 @@ $consul agent -dev -config-dir=/srv/consul/consul.d
 #### 查询服务
 - DNS API
     服务名的DNS 名称为`NAME.service.consul`
+
 ```bash
 $ dig @127.0.0.1 -p 8600 web.service.consul
 ...
@@ -123,7 +129,9 @@ $ dig @127.0.0.1 -p 8600 web.service.consul
 ;; ANSWER SECTION:
 web.service.consul. 0   IN  A   172.16.18.130
 ```
+
 通过查询`SRV`记录查询服务的IP和端口对应关系：
+
 ```bash
 $ dig @127.0.0.1 -p 8600 web.service.consul SRV
 ...
@@ -137,7 +145,9 @@ web.service.consul. 0   IN  SRV 1 1 80 vm.test.barryz.node.dc1.consul.
 ;; ADDITIONAL SECTION:
 Armons-MacBook-Air.node.dc1.consul. 0 IN A  172.16.18.130
 ```
+
 可以通过`tags`来过滤查询的服务：
+
 ```bash
 $ dig @127.0.0.1 -p 8600 nginx.web.service.consul
 ...
@@ -148,13 +158,17 @@ $ dig @127.0.0.1 -p 8600 nginx.web.service.consul
 ;; ANSWER SECTION:
 nginx.web.service.consul.   0   IN  A   172.16.18.130
 ```
+
 - HTTP API
+
 ```bash
 $ curl http://localhost:8500/v1/catalog/service/web
 [{"Node":"vm-test-barryz","Address":"172.20.20.11","ServiceID":"web", \
     "ServiceName":"web","ServiceTags":["nginx"],"ServicePort":80}]
 ```
+
 可以通过查询字符串`passing`或`faling`查询特定状态的服务：
+
 ```bash
 $ curl 'http://localhost:8500/v1/health/service/web?passing'
 [{"Node":"vm-test-barryz","Address":"172.20.20.11","Service":{ \
@@ -184,11 +198,13 @@ $ curl 'http://localhost:8500/v1/health/service/web?passing'
 `-client` 指定HTTP/DNS API 查询接口的监听地址
 
 组合在一起即为：
+
 ```bash
 $consul agent -server -bootstrap-expect=1 -data-dir=/tmp/consul -node=agent-test1 -bind=172.16.18.130 -config-dir=/srv/consul/conf.d -ui-dir=/srv/consul-web/ -client 0.0.0.0
 ```
 
 ***在非Server的Agent上， 去掉`-server`标志即可***：
+
 ```bash
 $consul agent -bootstrap-expect=1 -data-dir=/tmp/consul -node=agent-test1 -bind=172.16.18.130 -config-dir=/srv/consul/conf.d -ui-dir=/srv/consul-web/ -client 0.0.0.0
 
@@ -196,6 +212,7 @@ $consul agent -bootstrap-expect=1 -data-dir=/tmp/consul -node=agent-test1 -bind=
 
 #### 加入集群
 在Server Agent 上执行以下命令： 
+
 ```bash
 $consul join $node_name[$node_ip]
 ```
@@ -208,6 +225,7 @@ $consul join $node_name[$node_ip]
 > For the DNS API, the structure of the names is NAME.node.consul or NAME.node.DATACENTER.consul. If the datacenter is omitted, Consul will only search the local datacenter.
 
 对于DNS API， 查询的名称结构为：`NAME.node.consul` 或 `name.node.DATACENTER.consul`。 如果数据中心不存在（未指定）， Consul只搜索本地数据中心。
+
 ```bash
 $dig @127.0.0.1 -p 8600 agent-test2.node.consul
 
@@ -242,6 +260,7 @@ agent-test2.node.consul. 0	IN	A	172.16.18.131
 
 同服务注册一样， 健康检查同通过定义文件或HTTP API实现。
 以下定义两个文件分别用于两个节点：
+
 ```bash
 vm-test-barryz:$ echo '{"check": {"name": "ping",
   "script": "ping -c1 google.com >/dev/null", "interval": "30s"}}' \
@@ -251,12 +270,14 @@ vm-test2-barryz:$ echo '{"service": {"name": "web", "tags": ["rails"], "port": 8
   "check": {"script": "curl localhost >/dev/null 2>&1", "interval": "10s"}}}' \
   >/etc/consul.d/web.json
 ```
+
 第一个定义增加了一个主机级别的检查项"ping"， 每30s运行一次，调用`ping -c1 google.com`，在一个基于脚本的健康检查中， 运行该脚本的用户和consul进程用户相同，如果脚本的退出状态码`!=0`，节点就会标记为非健康的。这条规则适用于所有基于脚本的健康检查。
 第二个定义修改了服务`web`, 增加了一个每10s通过curl检查web服务器是否可用的检查项，和主机级别的检查项相同， 如果退出状态码`!=0`， 则该服务标记为不可用。
 
 
 #### 检查健康状态
 通过HTTP API接口可以查看节点（服务）的健康状态：
+
 ```bash
 curl -X GET http://localhost:8500/v1/health/state/critical  // critical 状态
 curl -X GET http://localhost:8500/v1/health/state/passing  // passing状态
@@ -272,34 +293,43 @@ key/value 存储可以用于保持动态配置、协调服务、构建leaders选
 
 #### 简单用法：
 查询（查看是否存在keys）：
+
 ```bash
 $curl -X GET http://localhost:8500/v1/kv/\?recurse
 ```
+
 若存在key，则会显示所有key的信息， 若不存在，则会返回404响应体。
 
 `PUT`方法可以添加key：
+
 ```bash
 $curl -X PUT http://localhost:8500/v1/kv/upstreams/test -d "test"
 ```
+
 往`upstreams/test`这个key中添加value: `test`。
+
 ```bash
 $curl -X PUT http://localhost:8500/v1/kv/upstreams/test2?flags=32 -d "test"
 ```
+
 为`test2`这个key设置了32 的标志位。
 
 ***请求返回的响应体内额value值都是经过base64编码（适配非UTF-8字符）。***
 
 #### 检索单个key
+
 ```bash
 $curl -X GET http://localhost:8500/v1/kv/upstreams/LOCAL_TEST_SERVERS/127.0.0.1:2000
 [{"LockIndex":0,"Key":"upstreams/LOCAL_TEST_SERVERS/127.0.0.1:2000","Flags":0,"Value":null,"CreateIndex":532,"ModifyIndex":532}]
 ```
 
 #### 删除key
+
 ```bash
 $curl -X DELETE http://localhost:8500/v1/kv/upstreams/LOCAL_TEST_SERVERS/127.0.0.1:2001
 true#
 ```
+
 删除成功返回`true`
 
 ***增加`?recurse`请求串删除所有key***
@@ -307,10 +337,13 @@ true#
 ---
 
 ### WEB UI
+
 ```bash
 $consul agent -ui
 ```
+
 新版本可使用：
+
 ```bash
 $consul agent -ui-dir=/srv/consul-web/
 ```
