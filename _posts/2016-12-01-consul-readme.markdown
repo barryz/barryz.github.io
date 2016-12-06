@@ -54,6 +54,7 @@ Agent和一个（多个）Consul Server通信。 Consul Server 用于存储和�
 
 ### Agent 运行
 ***`dev`模式运行agent***
+
 ```bash
 $consul agent -dev
 ==> Starting Consul agent...
