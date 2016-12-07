@@ -1,4 +1,4 @@
-﻿---
+---
 layout:     post
 title:      "Golang interface接口"
 subtitle:   "go 接口类型"
