@@ -86,8 +86,8 @@ type LessAdder interface {
 }
 
 var a Integer = 1
-var b1 LessAdder = &a //OK
-var b2 LessAdder = a   //not OK
+var b1 LessAdder = &a // OK
+var b2 LessAdder = a   // Integer does not implement LessAdder (Add method has pointer receiver)
 ```
 
 b2的赋值会报编译错误，为什么呢？还记得<类型方法>一章中讨论的Go语言规范的规定吗？
@@ -106,7 +106,7 @@ var rw2 io.ReadWriter = new(os.File)
 var r2 io.Reader = rw2    //ok
 ```
 
-因为r没有Write方法，所以不能赋值给rw。
+因为r没有Write方法，所以不能赋值给rw；rw2拥有Read/Wirite方法，所以能赋值给r2。
 
 ---
 
