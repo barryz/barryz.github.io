@@ -16,7 +16,7 @@ tags:
 
 ----------
 
-# 开发环境
+#### 开发环境
 
 - 测试环境：MacBook Pro OS X EI Captitan 版本 10.11.6 (15G31)
 - RabbitMQ 版本：rabbitmq_server-3.6.1
@@ -32,9 +32,9 @@ tags:
 ----------
 
 
-# 常用信息获取
+#### 常用信息获取
 
-## 查看 rabbit_mgmt_db 进程 pid
+#### 查看 rabbit_mgmt_db 进程 pid
 
 ```erlang
 (rabbit_2@sunfeideMacBook-Pro)2> whereis(rabbit_mgmt_db).
@@ -42,7 +42,7 @@ tags:
 (rabbit_2@sunfeideMacBook-Pro)3>
 ```
 
-## 查看 rabbit_mgmt_db 的进程信息
+#### 查看 rabbit_mgmt_db 的进程信息
 
 ```erlang
 (rabbit_2@sunfeideMacBook-Pro)3> erlang:process_info(whereis(rabbit_mgmt_db)).
@@ -85,7 +85,7 @@ tags:
 - {**reductions**,381020191} 表明了进程在系统中运行所耗费的时间度量；
 
 
-## 查看与 rabbit_mgmt_db 相关进程的信息
+#### 查看与 rabbit_mgmt_db 相关进程的信息
 
 ```erlang
 (rabbit_2@sunfeideMacBook-Pro)4> i().
@@ -106,7 +106,7 @@ rabbit_mgmt_sup       gen_server:loop/6                        9
 rabbit_mgmt_db        erlang:hibernate/3                       0
 ```
 
-## 通过 `sys:get_state/1` 获取 rabbit_mgmt_db 进程信息
+#### 通过 `sys:get_state/1` 获取 rabbit_mgmt_db 进程信息
 
 ```erlang
 (rabbit_2@sunfeideMacBook-Pro)1> sys:get_state(rabbit_mgmt_db).
@@ -138,7 +138,7 @@ rabbit_mgmt_db        erlang:hibernate/3                       0
 - {**queue**,[],[],0} 给出了 gen_server2 自行实现的、优先级队列中尚未处理的内容；
 
 
-## 通过 `sys:get_status/1` 获取 rabbit_mgmt_db 进程信息
+#### 通过 `sys:get_status/1` 获取 rabbit_mgmt_db 进程信息
 
 ```erlang
 (rabbit_2@sunfeideMacBook-Pro)5> sys:get_status(rabbit_mgmt_db).
@@ -176,9 +176,9 @@ rabbit_mgmt_db        erlang:hibernate/3                       0
 
 ----------
 
-# 源码分析
+#### 源码分析
 
-## sys:get_state/1
+#### sys:get_state/1
 
 当在 erlang console 中执行 `sys:get_state(rabbit_mgmt_db).` 命令时，对应的命令执行过程如下：
 
@@ -418,7 +418,7 @@ reply({To, Tag}, Reply) ->
 至此，我们已经清楚的知道，通过 `sys:get_state/1` 获取 rabbit_mgmt_db 进程（即 gen_server2 进程）的 state 信息全部过程；
 
 
-## 详解 gen_server2 的 state 信息
+#### 详解 gen_server2 的 state 信息
 
 对比 gen_server2.erl 的 state 定义，可以更好的理解获取信息的含义；
 
@@ -467,7 +467,7 @@ reply({To, Tag}, Reply) ->
 ```
 
 
-## sys:get_status/1
+#### sys:get_status/1
 
 由于相关代码几乎与 `sys:get_state/1` 相同，故只给出差异部分的代码；
 
@@ -566,7 +566,7 @@ format_message_queue(_Opt, MQ) ->
      end}.
 ```
 
-## status 信息
+#### status 信息
 
 需要知道的是，status 信息不是以 record 的形式定义的，而是在 sys:get_status/5 接口中直接指定的
 
@@ -612,7 +612,7 @@ get_status(SysState, Parent, Mod, Debug, Misc) ->
 ----------
 
 
-# 信息获取方法
+#### 信息获取方法
 
 由于本文的目标是获取 rabbit_mgmt_db 进程的状态信息，因此可以采用两种方式进行操作：
 - 先确定 rabbit_mgmt_db 进程（即统计数据库的位置）运行于哪个 RabbitMQ 节点上，再调用访问本地节点的接口进行信息获取；
@@ -642,11 +642,11 @@ sudo rabbitmqctl eval "sys:get_state({global, rabbit_mgmt_db})."
 > ⚠️ 由于 `sys:get_state/1,2` 在 OTP R16 的各个版本中无法使用，建议改为使用 `sys:get_status/1,2`;
 
 
-# 实验
+#### 实验
 
-## 向 rabbit_mgmt_db 进程压入大量消息
+#### 向 rabbit_mgmt_db 进程压入大量消息
 
-### 初始状态
+#### 初始状态
 
 
 ```erlang
@@ -789,7 +789,7 @@ RabbitMQ Web 控制台状态信息
 
 
 
-### 压入 1w 条消息时的状态
+#### 压入 1w 条消息时的状态
 
 在另一个 erlang console 中，向 rabbit_mgmt_db 进程压入 10,000 条消息；
 
@@ -872,7 +872,7 @@ RabbitMQ Web 控制台状态信息
 ![压入 10000 消息后 entop](https://raw.githubusercontent.com/moooofly/ImageCache/master/Pictures/%E5%8E%8B%E5%85%A5%2010000%20%E6%B6%88%E6%81%AF%E5%90%8E%20entop.png "压入 10000 消息后 entop")
 
 
-### 压入 100w 条消息时的状态
+#### 压入 100w 条消息时的状态
 
 在另一个 erlang console 中，再向 rabbit_mgmt_db 进程压入 1,000,000 条消息；
 
@@ -980,7 +980,7 @@ RabbitMQ Web 控制台状态信息
 ![压入 100w 消息后 entop](https://raw.githubusercontent.com/moooofly/ImageCache/master/Pictures/%E5%8E%8B%E5%85%A5%20100w%20%E6%B6%88%E6%81%AF%E5%90%8E%20entop.png "压入 100w 消息后 entop")
 
 
-### 压入 1000w 条消息时的状态
+#### 压入 1000w 条消息时的状态
 
 再向 rabbit_mgmt_db 进程压入 10,000,000 条消息；
 
@@ -1185,7 +1185,7 @@ RabbitMQ Web 控制台状态信息
 
 ![压入 1000w 消息后 entop](https://raw.githubusercontent.com/moooofly/ImageCache/master/Pictures/%E5%8E%8B%E5%85%A5%201000w%20%E6%B6%88%E6%81%AF%E5%90%8E%20entop.png "压入 1000w 消息后 entop")
 
-### 压入 10000w 条消息时的状态
+#### 压入 10000w 条消息时的状态
 
 再向 rabbit_mgmt_db 进程压入 100,000,000 条消息；
 
@@ -1389,7 +1389,7 @@ RabbitMQ Web 控制台状态信息
 
 
 
-### 实验结果说明
+#### 实验结果说明
 
 从上面的实验中可以得出以下几个结论：
 - 只有统计数据库所在的 RabbitMQ 节点的内存占用随着压入消息量的增加而增大（从 56M 开始，最终达到 16G）；
@@ -1398,7 +1398,7 @@ RabbitMQ Web 控制台状态信息
 
 
 
-## 线上环境实际数据
+#### 线上环境实际数据
 
 信息获取
 - last_queue_length : 44
@@ -1866,7 +1866,7 @@ RabbitMQ Web 控制台状态信息
 
 ----------
 
-# 总结
+#### 总结
 
 经过分析，结论很明显为：由于 channel 的反复创建和销毁导致大量统计事件的产生，进而导致处理这些事件的 rabbit_mgmt_db 进程的运行耗时（reductions 值）大大高出了其他进程的运行时间（基于我之前的多次测量，在目前反复创建销毁 channel 的使用场景下，rabbit_mgmt_db 进程的运行时间为其他所有 RabbitMQ 进程运行时间总和的 20 倍左右）；进而导致了真正负责业务处理的 RabbitMQ 进程的运行受到影响！
 
